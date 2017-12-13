@@ -11,10 +11,11 @@ namespace Celebrities
     {
         public static void Register(HttpConfiguration config)
         {
-            // Web API configuration and services
-
             // Web API routes
             config.MapHttpAttributeRoutes();
+
+            //Enable Cors
+            config.EnableCors();
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
@@ -22,10 +23,9 @@ namespace Celebrities
                 defaults: new { id = RouteParameter.Optional }
             );
 
-            var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().FirstOrDefault();
-            //use a specific contract resolver when serialization
-            //for a camel cased json result.
-            jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            //json formatter
+            config.Formatters.JsonFormatter.SerializerSettings.ContractResolver =
+                new CamelCasePropertyNamesContractResolver();
         }
     }
 }

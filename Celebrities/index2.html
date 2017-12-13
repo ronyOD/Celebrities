@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Celebrity System</title>
+
+    <script src="Scripts/angular.min.js"></script>
+    <!--<script src="app/CelebrityApp.js"></script>-->
+    <script src="app/app.js"></script>
+
+    <script src="app/CelebritiesCtrl.js"></script>
+
+    <script src="app/CelebritiesService.js"></script>
+
+    <link href="Scripts/bootstrap.css" rel="stylesheet" />
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+
+</head>
+<body ng-app="CelebrityApp">
+    <div ng-controller="CelebritiesCtrl as ctrl" class="container">
+
+        <h1>Celebrity System</h1>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Country</th>
+                    <th>&nbsp;</th>
+                </tr>
+
+            </thead>
+            <tbody>
+                <tr ng-repeat="celebrity in Celebrities | orderBy: 'age'">
+                    <td>{{celebrity.name}}</td>
+                    <td>{{celebrity.age}}</td>
+                    <td>{{celebrity.country}}</td>
+                    <td>
+                        <!-- Select -->
+                        <button ng-click="ctrl.Select(celebrity)" class="btn btn-warning">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </button>
+                    </td>
+                    <td>
+                        <!--Remove-->
+                        <button ng-click="ctrl.Remove(celebrity.id)" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <th><input ng-model="celebrity.name" class="form-control" /></th>
+                    <th><input ng-model="celebrity.age" class="form-control" /></th>
+                    <th><input ng-model="celebrity.country" class="form-control" /></th>
+                    <th>
+                        <!--Update-->
+                        <button ng-click="ctrl.Update()" class="btn btn-success">
+                            <span class="glyphicon glyphicon-ok"></span>
+                            Update
+                        </button>
+                    </th>
+                    <th>
+                        <!--Add-->
+                        <button ng-click="ctrl.Add()" class="btn btn-success">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                    </th>
+                </tr>
+            </tbody>
+        </table>
+        <h3>{{message}}</h3>
+    </div>
+
+</body>
+</html>

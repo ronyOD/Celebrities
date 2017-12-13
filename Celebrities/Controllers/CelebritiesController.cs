@@ -4,97 +4,60 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using Celebrities.Models;
 using Newtonsoft.Json;
+using Celebrities.Models;
+using System.Web.Http.Cors;
 
 namespace Celebrities.Controllers
 {
-    public class CelebritiesController : BaseController
+    [EnableCorsAttribute("http://localhost:50728", "*","*")]
+
+    /* Celebrities Controller handles CRUD operations */
+    public class CelebritiesController : ApiController
     {
+        public void Delete(int id)
+        {
+            var celebrityRepository = new CelebrityRepository();
+            celebrityRepository.Delete(id);
+        }
+
+        public void Put(int id, [FromBody]CelebrityModel celebrity)
+        {
+            var celebrityRepository = new CelebrityRepository();
+            var updatedProduct = celebrityRepository.Save(id, celebrity);
+        }
+
+        public CelebrityModel Get(int id)
+        {
+            CelebrityModel celebrity;
+            var celebrityRepository = new CelebrityRepository();
+
+            if(id > 0)
+            {
+                var celebrities = celebrityRepository.Retrieve();
+                celebrity = celebrities.FirstOrDefault(p => p.Id == id);
+            }
+            else
+            {
+                celebrity = celebrityRepository.Create();
+            }
+
+            return celebrity;
+        }
+
         
-        public bool Delete(int Id)
-        {
-            var CelebrityToDelete = GetById(Id);
-            if (CelebrityToDelete != null)
-            {
-                this.celebsList.Remove(CelebrityToDelete);
-                SaveAll();
-                return true;
-            }
-            return false;
-        }
-
-        public bool Put(int Id,[FromBody]CelebrityModel UpdatedCelebrity)
-        {
-            var Celebrity = GetById(Id);
-            if(Celebrity != null)
-            {
-                Delete(Id);
-                UpdatedCelebrity.Id = Id;
-                celebsList.Add(UpdatedCelebrity);
-                SaveAll();
-                return true;
-            }
-            return false;
-        }
-
         public List<CelebrityModel> Get()
         {
-            return this.celebsList;
+            var celebrityRepository = new CelebrityRepository();
+            return celebrityRepository.Retrieve();
+
         }
 
-        public bool Post([FromBody] CelebrityModel Celebrity)
+        public void Post([FromBody] CelebrityModel celebrity)
         {
-            Celebrity.Id = celebsList.Count + 1;
-            if(Celebrity.Name != null && Celebrity.Age != 0 && Celebrity.Country != null)
-            {
-                celebsList.Add(Celebrity);
-                SaveAll();
-                return true;
-            }
-            return false;
-        }
+            var celebrityRepository = new CelebrityRepository();
+            var newCelebrity = celebrityRepository.Save(celebrity);
 
-        private bool SaveAll()
-        {
-            if (WriteToJsonFile())
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private bool WriteToJsonFile()
-        {
-            //serialize list to json and write to file
-            try
-            {
-                var JsonStr = JsonConvert.SerializeObject(this.celebsList.ToArray());
-                System.IO.File.WriteAllText(this.Path, JsonStr);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-            return false;
-        }
-
-        private CelebrityModel GetById(int Id)
-        {
-            try
-            {
-                var Celebrity = celebsList.Find(x => x.Id == Id);
-                if(Celebrity != null)
-                {
-                    return Celebrity;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-            return null;
         }
     }
 }

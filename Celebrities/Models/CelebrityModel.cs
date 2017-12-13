@@ -5,6 +5,7 @@ using System.Web;
 
 namespace Celebrities.Models
 {
+    /* Plain celebrity model */
     public class CelebrityModel
     {
         public int Id { get; set; }
